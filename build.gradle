@@ -4,7 +4,7 @@ plugins {
     id 'java'
 }
 
-group = 'br.com.datapoa'
+group = 'br.com.poatransporte'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
