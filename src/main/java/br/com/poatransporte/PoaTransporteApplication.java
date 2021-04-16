@@ -1,13 +1,13 @@
-package br.com.datapoa;
+package br.com.poatransporte;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DatapoaApplication {
+public class PoaTransporteApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(DatapoaApplication.class, args);
+    SpringApplication.run(PoaTransporteApplication.class, args);
   }
 
 }
