@@ -1,4 +1,18 @@
+spring:
+  r2dbc:
+    url: r2dbc:pool:postgres://localhost:5432/poatransporte
+    username: root
+    password: root
+  flyway:
+    url: 'jdbc:postgresql://localhost:5432/poatransporte'
+    user:  'root'
+    password: 'root'
+    baseline-on-migrate: true
+
 poa-transporte:
   linha-endpoint:
     url: http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=%&t=o
 
+logging:
+  level:
+    root: debug
