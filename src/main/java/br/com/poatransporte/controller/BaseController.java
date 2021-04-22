@@ -5,7 +5,7 @@ import reactor.core.publisher.Mono;
 
 public interface BaseController<T> {
 
-  Flux<T> getAll();
+  Flux<T> findAll();
 
   Mono<T> findById(Long id);
 

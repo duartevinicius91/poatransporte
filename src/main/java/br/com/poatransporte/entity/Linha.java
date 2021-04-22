@@ -23,8 +23,7 @@ public class Linha implements Persistable<Long> {
     return isNew || isNull(id);
   }
 
-  public Linha setAsNew() {
+  public void setAsNew() {
     this.isNew = true;
-    return this;
   }
 }

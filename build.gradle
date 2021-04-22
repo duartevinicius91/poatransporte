@@ -2,6 +2,8 @@ plugins {
     id 'org.springframework.boot' version '2.4.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'idea'
+    id 'info.solidsoft.pitest' version '1.6.0'
 }
 
 group = 'br.com.poatransporte'
@@ -32,4 +34,17 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+build {
+    dependsOn 'pitest'
+}
+
+
+pitest {
+    junit5PluginVersion = '0.12'
+    timestampedReports = false
+    mutationThreshold = 100
+    coverageThreshold = 100
+    excludedClasses = ['br.com.poatransporte.config.*', 'br.com.poatransporte.PoaTransporteApplication']
 }
