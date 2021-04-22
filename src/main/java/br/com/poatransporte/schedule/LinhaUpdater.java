@@ -16,7 +16,8 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class LinhaUpdater {
 
-  public static final String LINHA_IMPORTADA_COM_SUCESSO = "Linha importada com sucesso. {}";
+  public static final String LINHA_IMPORTADA_COM_SUCESSO = "Linha imported successful. {}";
+  public static final String IMPORT_LINES_TASK_FINISHED = "Import linhas task finished.";
   private final LinhaWebClient linhaWebClient;
   private final LinhaRepository linhaRepository;
   private final LinhaConverter linhaConverter;
@@ -29,16 +30,20 @@ public class LinhaUpdater {
   }
 
   @PostConstruct
-  @Scheduled(cron = "10 * 1 * * *")
+  @Scheduled(cron = "* * 1 * * *")
   public void importaLinhasPoaTransporte() {
     linhaWebClient.getLinhas()
-        .flatMap(linhaDto -> Mono.just(linhaConverter.toEntity(linhaDto))        )
-        .flatMap(linha ->
+        .flatMap(linhaDto -> Mono.just(linhaConverter.toEntity(linhaDto)))
+        .doOnNext(Linha::setAsNew)
+        .doOnNext(linha ->
             linhaRepository
               .findById(linha.getId())
-              .switchIfEmpty(linhaRepository.save(linha.setAsNew()))
+              .switchIfEmpty(linhaRepository.save(linha))
+              .subscribe(newLinha -> log.info(LINHA_IMPORTADA_COM_SUCESSO, newLinha))
         )
-        .subscribe(linha -> log.info(LINHA_IMPORTADA_COM_SUCESSO, linha))
+        .doOnTerminate(() -> log.info(IMPORT_LINES_TASK_FINISHED))
+        .subscribe()
+
     ;
   }
 }
