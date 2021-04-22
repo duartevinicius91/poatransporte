@@ -1,16 +1,14 @@
 package br.com.poatransporte.schedule;
 
-import br.com.poatransporte.dto.LinhaDto;
+import br.com.poatransporte.converter.LinhaConverter;
 import br.com.poatransporte.entity.Linha;
 import br.com.poatransporte.repository.LinhaRepository;
+import br.com.poatransporte.webclient.LinhaWebClient;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.MonoOperator;
 
 import javax.annotation.PostConstruct;
 
@@ -19,21 +17,22 @@ import javax.annotation.PostConstruct;
 public class LinhaUpdater {
 
   public static final String LINHA_IMPORTADA_COM_SUCESSO = "Linha importada com sucesso. {}";
-  private final WebClient linhaWebClient;
+  private final LinhaWebClient linhaWebClient;
   private final LinhaRepository linhaRepository;
+  private final LinhaConverter linhaConverter;
 
   @Autowired
-  public LinhaUpdater(WebClient linhaWebClient, LinhaRepository linhaRepository) {
+  public LinhaUpdater(LinhaWebClient linhaWebClient, LinhaRepository linhaRepository, LinhaConverter linhaConverter) {
     this.linhaWebClient = linhaWebClient;
     this.linhaRepository = linhaRepository;
+    this.linhaConverter = linhaConverter;
   }
 
   @PostConstruct
+  @Scheduled(cron = "10 * 1 * * *")
   public void importaLinhasPoaTransporte() {
-    linhaWebClient
-        .get()
-        .retrieve()
-        .bodyToFlux(Linha.class)
+    linhaWebClient.getLinhas()
+        .flatMap(linhaDto -> Mono.just(linhaConverter.toEntity(linhaDto))        )
         .flatMap(linha ->
             linhaRepository
               .findById(linha.getId())

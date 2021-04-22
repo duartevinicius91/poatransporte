@@ -9,9 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.util.MimeType;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.nio.charset.StandardCharsets;
+
+import static org.springframework.web.reactive.function.client.WebClient.Builder;
+import static org.springframework.web.reactive.function.client.WebClient.builder;
 
 @Configuration
 public class WebClientConfig {
@@ -23,14 +25,10 @@ public class WebClientConfig {
   private ObjectMapper mapper;
 
   @Bean
-  public WebClient linhaWebClient() {
+  public Builder webClientBuilder() {
     ExchangeStrategies strategies = strategies();
 
-    return
-      WebClient.builder()
-        .exchangeStrategies(strategies)
-        .baseUrl(linhaEndPoint)
-        .build();
+    return builder().exchangeStrategies(strategies);
   }
 
   private ExchangeStrategies strategies() {
