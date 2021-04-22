@@ -1,6 +1,7 @@
 package br.com.poatransporte.controller;
 
 import br.com.poatransporte.dto.LinhaDto;
+import br.com.poatransporte.service.BaseService;
 import br.com.poatransporte.service.LinhaService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +14,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/linha")
 public class LinhaController implements BaseController<LinhaDto> {
 
-  private final LinhaService linhaService;
+  private final BaseService<LinhaDto> linhaService;
 
   public LinhaController(LinhaService linhaService) {
     this.linhaService = linhaService;
@@ -21,7 +22,7 @@ public class LinhaController implements BaseController<LinhaDto> {
 
   @GetMapping
   public Flux<LinhaDto> getAll() {
-    return linhaService.getLinhas();
+    return linhaService.findAll();
   }
 
   @GetMapping("/{id}")
