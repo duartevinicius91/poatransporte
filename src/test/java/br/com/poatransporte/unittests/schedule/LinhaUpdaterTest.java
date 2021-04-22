@@ -33,6 +33,7 @@ class LinhaUpdaterTest {
   void shouldInsertNewLinha() {
     when(linhaWebClient.getLinhas()).thenReturn(Flux.just(build()));
     when(linhaRepository.findById(anyLong())).thenReturn(Mono.empty());
+    when(linhaRepository.save(any(Linha.class))).thenReturn(Mono.just(new Linha()));
     ArgumentCaptor<Linha> argumentCaptor = ArgumentCaptor.forClass(Linha.class);
 
     linhaUpdater.importaLinhasPoaTransporte();
