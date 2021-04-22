@@ -16,12 +16,12 @@ public class LinhaController implements BaseController<LinhaDto> {
 
   private final BaseService<LinhaDto> linhaService;
 
-  public LinhaController(LinhaService linhaService) {
+  public LinhaController(BaseService<LinhaDto> linhaService) {
     this.linhaService = linhaService;
   }
 
   @GetMapping
-  public Flux<LinhaDto> getAll() {
+  public Flux<LinhaDto> findAll() {
     return linhaService.findAll();
   }
 

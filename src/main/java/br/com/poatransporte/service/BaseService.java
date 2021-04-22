@@ -4,5 +4,5 @@ import reactor.core.publisher.Flux;
 
 public interface BaseService <T> {
 
-  public Flux<T> findAll();
+  Flux<T> findAll();
 }
