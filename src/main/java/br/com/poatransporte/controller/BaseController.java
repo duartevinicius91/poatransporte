@@ -10,4 +10,7 @@ public interface BaseController<T> {
   Mono<T> findById(Long id);
 
   Mono<Void> delete(Long id);
+
+  Mono<T> create(T dto);
+
 }

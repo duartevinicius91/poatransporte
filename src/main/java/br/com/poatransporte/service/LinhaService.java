@@ -2,6 +2,7 @@ package br.com.poatransporte.service;
 
 import br.com.poatransporte.converter.LinhaConverter;
 import br.com.poatransporte.dto.LinhaDto;
+import br.com.poatransporte.entity.Linha;
 import br.com.poatransporte.repository.LinhaRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -32,4 +33,20 @@ public class LinhaService implements BaseService<LinhaDto> {
   public Mono<Void> delete(Long id) {
     return linhaRepository.deleteById(id);
   }
+
+  @Override
+  public Mono<LinhaDto> create(LinhaDto dto) {
+    return Mono.just(dto)
+        .flatMap(linhaConverter::toEntity)
+        .doOnNext(Linha::setAsNew)
+        .flatMap(linha ->
+            linhaRepository
+                .findById(linha.getId())
+                .defaultIfEmpty(linha)
+                .flatMap(newLinha -> linhaRepository.save(newLinha))
+        )
+        .flatMap(linhaConverter::toDto);
+  }
+
+
 }

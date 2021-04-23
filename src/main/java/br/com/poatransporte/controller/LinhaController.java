@@ -31,5 +31,9 @@ public class LinhaController implements BaseController<LinhaDto> {
     return linhaService.delete(id);
   }
 
+  @PostMapping
+  public Mono<LinhaDto> create(@RequestBody LinhaDto dto) {
+    return linhaService.create(dto);
+  }
 
 }
