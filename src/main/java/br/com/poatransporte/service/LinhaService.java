@@ -25,6 +25,11 @@ public class LinhaService implements BaseService<LinhaDto> {
 
   @Override
   public Mono<LinhaDto> findById(Long id) {
-    return null;
+    return linhaRepository.findById(id).flatMap(linhaConverter::toDto);
+  }
+
+  @Override
+  public Mono<Void> delete(Long id) {
+    return linhaRepository.deleteById(id);
   }
 }

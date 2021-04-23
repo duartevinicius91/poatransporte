@@ -8,4 +8,6 @@ public interface BaseService <T> {
   Flux<T> findAll();
 
   Mono<T> findById(Long id);
+
+  Mono<Void> delete(Long id);
 }

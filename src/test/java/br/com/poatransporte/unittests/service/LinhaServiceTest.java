@@ -8,9 +8,11 @@ import br.com.poatransporte.service.LinhaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static br.com.poatransporte.helper.LinhaHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -18,7 +20,7 @@ class LinhaServiceTest {
 
   private LinhaConverter linhaConverter = new LinhaConverter();
   private LinhaRepository linhaRepository;
-  private BaseService linhaService;
+  private BaseService<LinhaDto> linhaService;
 
   @BeforeEach
   void setUp() {
@@ -37,4 +39,22 @@ class LinhaServiceTest {
     assertEquals(CODIGO, actual.getCodigo());
     assertEquals(NOME, actual.getNome());
   }
+
+  @Test
+  void shouldReturnLinhaWhenFindById() {
+    when(linhaRepository.findById(anyLong())).thenReturn(Mono.just(buildEntity()));
+
+    LinhaDto actual = linhaService.findById(1L).block();
+    assertEquals(buildDto(), actual);
+  }
+
+  @Test
+  void shouldReturnVoidMonoWhenDeleteLinha() {
+    when(linhaRepository.deleteById(anyLong())).thenReturn(Mono.empty());
+
+    Void block = linhaService.delete(1L).block();
+    assertNull(block);
+ }
+
+
 }
