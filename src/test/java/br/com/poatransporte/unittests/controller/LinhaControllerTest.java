@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static br.com.poatransporte.helper.LinhaDtoHelper.*;
+import static br.com.poatransporte.helper.LinhaHelper.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -29,7 +29,7 @@ class LinhaControllerTest {
 
   @Test
   void shoudReturnExaclyWhatServiceReturns() {
-    when(linhaService.findAll()).thenReturn(Flux.just(build()));
+    when(linhaService.findAll()).thenReturn(Flux.just(buildDto()));
     Flux<LinhaDto> findAll = linhaController.findAll();
     LinhaDto actual = findAll.blockFirst();
 

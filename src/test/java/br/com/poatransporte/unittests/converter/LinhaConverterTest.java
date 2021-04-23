@@ -1,25 +1,37 @@
 package br.com.poatransporte.unittests.converter;
 
 import br.com.poatransporte.converter.LinhaConverter;
+import br.com.poatransporte.dto.LinhaDto;
 import br.com.poatransporte.entity.Linha;
 import org.junit.jupiter.api.Test;
 
-import static br.com.poatransporte.helper.LinhaDtoHelper.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static br.com.poatransporte.helper.LinhaHelper.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LinhaConverterTest {
 
   private LinhaConverter linhaConverter = new LinhaConverter();
 
   @Test
-  public void convertToEntity() {
-    Linha linha = linhaConverter.toEntity(build()).block();
+  void convertToEntity() {
+    Linha linha = linhaConverter.toEntity(buildDto()).block();
 
     assertNotNull(linha);
-    assertEquals(CODIGO, linha.getCodigo());
-    assertEquals(ID, linha.getId());
-    assertEquals(NOME, linha.getNome());
-
+    assertEquals(buildEntity(), linha);
   }
+
+  @Test
+  void convertToDto() {
+    LinhaDto linha = linhaConverter.toDto(buildEntity()).block();
+
+    assertNotNull(linha);
+    assertEquals(buildDto(), linha);
+  }
+
+  @Test
+  void shouldReturnNullWhenParamNull() {
+    assertNull(linhaConverter.toDto(null));
+    assertNull(linhaConverter.toEntity(null));
+  }
+
 }
