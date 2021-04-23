@@ -11,7 +11,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static br.com.poatransporte.helper.LinhaHelper.*;
+import static br.com.poatransporte.helper.LinhaHelper.buildDto;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -70,5 +72,31 @@ class LinhaControllerTest {
 
     assertNull(actual);
   }
+
+  @Test
+  void whenCreateShouldReturnServiceCreateReturnMethod() {
+    LinhaDto dto = buildDto();
+    when(linhaService.create(any(LinhaDto.class))).thenReturn(Mono.just(dto));
+
+    LinhaDto actual = linhaController.create(dto).block();
+
+    assertNotNull(actual);
+    assertEquals(ID, actual.getId());
+    assertEquals(CODIGO, actual.getCodigo());
+    assertEquals(NOME, actual.getNome());
+  }
+
+  @Test
+  void whenUpdateShouldReturnServiceUpdateReturnMethod() {
+    when(linhaService.update(anyLong(), any(LinhaDto.class))).thenReturn(Mono.just(buildDto()));
+
+    LinhaDto actual = linhaController.update(1L, buildDto()).block();
+
+    assertNotNull(actual);
+    assertEquals(ID, actual.getId());
+    assertEquals(CODIGO, actual.getCodigo());
+    assertEquals(NOME, actual.getNome());
+  }
+
 
 }

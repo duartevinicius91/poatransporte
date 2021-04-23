@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.MonoProcessor;
 
 @Service
 public class LinhaService implements BaseService<LinhaDto> {
@@ -40,13 +41,18 @@ public class LinhaService implements BaseService<LinhaDto> {
   @Override
   public Mono<LinhaDto> create(LinhaDto dto) {
     return linhaRepository.findById(dto.getId())
-        .doOnNext(linha -> {
+        .switchIfEmpty(Mono.defer(() ->
+          linhaConverter.toEntity(dto).flatMap(linha -> {
+            linha.setAsNew();
+            return Mono.just(linha);
+          })
+        ))
+        .flatMap(linha -> {
+          linha.setId(dto.getId());
           linha.setNome(dto.getNome());
           linha.setCodigo(dto.getCodigo());
+          return Mono.just(linha);
         })
-        .switchIfEmpty(
-            linhaConverter.toEntity(dto).doOnNext(Linha::setAsNew)
-        )
         .flatMap(linhaRepository::save)
         .flatMap(linhaConverter::toDto);
   }
@@ -54,12 +60,13 @@ public class LinhaService implements BaseService<LinhaDto> {
   @Override
   public Mono<LinhaDto> update(Long id, LinhaDto dto) {
     return linhaRepository.findById(id)
-        .switchIfEmpty(Mono.error(
+        .switchIfEmpty(Mono.defer(() -> Mono.error(
             new HttpClientErrorException(HttpStatus.NOT_FOUND, String.format(LINHA_NAO_LOCALIZADA, id))
-        ))
-        .doOnNext(linha -> {
+        )))
+        .flatMap(linha -> {
           linha.setNome(dto.getNome());
           linha.setCodigo(dto.getCodigo());
+          return Mono.just(linha);
         })
         .flatMap(linhaRepository::save)
         .flatMap(linhaConverter::toDto);
