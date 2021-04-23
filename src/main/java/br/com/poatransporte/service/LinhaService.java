@@ -1,23 +1,30 @@
 package br.com.poatransporte.service;
 
+import br.com.poatransporte.converter.LinhaConverter;
 import br.com.poatransporte.dto.LinhaDto;
-import br.com.poatransporte.entity.Linha;
-import br.com.poatransporte.webclient.LinhaWebClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.poatransporte.repository.LinhaRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class LinhaService implements BaseService<LinhaDto> {
 
-  private final LinhaWebClient linhaWebClient;
+  private final LinhaRepository linhaRepository;
+  private final LinhaConverter linhaConverter;
 
-  @Autowired
-  public LinhaService(LinhaWebClient linhaWebClient) {
-    this.linhaWebClient = linhaWebClient;
+  public LinhaService(LinhaRepository linhaRepository, LinhaConverter linhaConverter) {
+    this.linhaRepository = linhaRepository;
+    this.linhaConverter = linhaConverter;
   }
 
+
   public Flux<LinhaDto> findAll() {
-    return linhaWebClient.getLinhas();
+    return linhaRepository.findAll().flatMap(linhaConverter::toDto);
+  }
+
+  @Override
+  public Mono<LinhaDto> findById(Long id) {
+    return null;
   }
 }

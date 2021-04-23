@@ -14,7 +14,7 @@ class LinhaConverterTest {
 
   @Test
   public void convertToEntity() {
-    Linha linha = linhaConverter.toEntity(build());
+    Linha linha = linhaConverter.toEntity(build()).block();
 
     assertNotNull(linha);
     assertEquals(CODIGO, linha.getCodigo());
