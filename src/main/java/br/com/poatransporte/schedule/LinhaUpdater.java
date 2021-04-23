@@ -30,10 +30,10 @@ public class LinhaUpdater {
   }
 
   @PostConstruct
-  @Scheduled(cron = "* * 1 * * *")
+  @Scheduled(cron = "0 0 1 * * *")
   public void importaLinhasPoaTransporte() {
     linhaWebClient.getLinhas()
-        .flatMap(linhaDto -> Mono.just(linhaConverter.toEntity(linhaDto)))
+        .flatMap(linhaConverter::toEntity)
         .doOnNext(Linha::setAsNew)
         .doOnNext(linha ->
             linhaRepository

@@ -10,9 +10,11 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static br.com.poatransporte.helper.LinhaDtoHelper.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static br.com.poatransporte.helper.LinhaHelper.*;
+import static br.com.poatransporte.helper.LinhaHelper.buildDto;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,7 +31,7 @@ class LinhaControllerTest {
 
   @Test
   void shoudReturnExaclyWhatServiceReturns() {
-    when(linhaService.findAll()).thenReturn(Flux.just(build()));
+    when(linhaService.findAll()).thenReturn(Flux.just(buildDto()));
     Flux<LinhaDto> findAll = linhaController.findAll();
     LinhaDto actual = findAll.blockFirst();
 
@@ -40,9 +42,61 @@ class LinhaControllerTest {
   }
 
   @Test
-  void killNullReturnMutationTest() {
-    Mono<LinhaDto> byId = linhaController.findById(1L);
+  void shouldReturnLinhaWhenFindById() {
+    when(linhaService.findById(anyLong())).thenReturn(Mono.just(buildDto()));
 
-    assertNotNull(byId);
+    LinhaDto actual = linhaController.findById(1L).block();
+    assertNotNull(actual);
+    assertEquals(NOME, actual.getNome());
+    assertEquals(CODIGO, actual.getCodigo());
+    assertEquals(ID, actual.getId());
   }
+
+  @Test
+  void shouldReturnExaclyWhatLinhaWebClientReturn() {
+    when(linhaService.findAll()).thenReturn(Flux.just(buildDto()));
+
+    LinhaDto actual = linhaService.findAll().blockFirst();
+
+    assertNotNull(actual);
+    assertEquals(NOME, actual.getNome());
+    assertEquals(CODIGO, actual.getCodigo());
+    assertEquals(ID, actual.getId());
+  }
+
+  @Test
+  void shouldReturnVoidMonoWhenDeleteLinha() {
+    when(linhaService.delete(anyLong())).thenReturn(Mono.empty());
+
+    Void actual = linhaController.delete(1L).block();
+
+    assertNull(actual);
+  }
+
+  @Test
+  void whenCreateShouldReturnServiceCreateReturnMethod() {
+    LinhaDto dto = buildDto();
+    when(linhaService.create(any(LinhaDto.class))).thenReturn(Mono.just(dto));
+
+    LinhaDto actual = linhaController.create(dto).block();
+
+    assertNotNull(actual);
+    assertEquals(ID, actual.getId());
+    assertEquals(CODIGO, actual.getCodigo());
+    assertEquals(NOME, actual.getNome());
+  }
+
+  @Test
+  void whenUpdateShouldReturnServiceUpdateReturnMethod() {
+    when(linhaService.update(anyLong(), any(LinhaDto.class))).thenReturn(Mono.just(buildDto()));
+
+    LinhaDto actual = linhaController.update(1L, buildDto()).block();
+
+    assertNotNull(actual);
+    assertEquals(ID, actual.getId());
+    assertEquals(CODIGO, actual.getCodigo());
+    assertEquals(NOME, actual.getNome());
+  }
+
+
 }

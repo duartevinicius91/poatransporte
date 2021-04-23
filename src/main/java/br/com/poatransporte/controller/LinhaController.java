@@ -2,11 +2,7 @@ package br.com.poatransporte.controller;
 
 import br.com.poatransporte.dto.LinhaDto;
 import br.com.poatransporte.service.BaseService;
-import br.com.poatransporte.service.LinhaService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -27,7 +23,21 @@ public class LinhaController implements BaseController<LinhaDto> {
 
   @GetMapping("/{id}")
   public Mono<LinhaDto> findById(@PathVariable("id") Long id) {
-    return Mono.empty();
+    return linhaService.findById(id);
   }
 
+  @DeleteMapping("/{id}")
+  public Mono<Void> delete(@PathVariable("id") Long id) {
+    return linhaService.delete(id);
+  }
+
+  @PostMapping
+  public Mono<LinhaDto> create(@RequestBody LinhaDto dto) {
+    return linhaService.create(dto);
+  }
+
+  @PutMapping("/{id}")
+  public Mono<LinhaDto> update(@PathVariable("id") Long id, @RequestBody LinhaDto dto) {
+    return linhaService.update(id, dto);
+  }
 }

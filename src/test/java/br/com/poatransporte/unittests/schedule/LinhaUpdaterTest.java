@@ -11,7 +11,7 @@ import org.mockito.ArgumentCaptor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static br.com.poatransporte.helper.LinhaDtoHelper.*;
+import static br.com.poatransporte.helper.LinhaHelper.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -31,7 +31,7 @@ class LinhaUpdaterTest {
 
   @Test
   void shouldInsertNewLinha() {
-    when(linhaWebClient.getLinhas()).thenReturn(Flux.just(build()));
+    when(linhaWebClient.getLinhas()).thenReturn(Flux.just(buildDto()));
     when(linhaRepository.findById(anyLong())).thenReturn(Mono.empty());
     when(linhaRepository.save(any(Linha.class))).thenReturn(Mono.just(new Linha()));
     ArgumentCaptor<Linha> argumentCaptor = ArgumentCaptor.forClass(Linha.class);
