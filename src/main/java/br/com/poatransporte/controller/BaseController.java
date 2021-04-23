@@ -13,4 +13,5 @@ public interface BaseController<T> {
 
   Mono<T> create(T dto);
 
+  Mono<T> update(Long id, T dto);
 }

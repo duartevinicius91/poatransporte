@@ -13,4 +13,6 @@ public interface BaseService <T> {
 
   Mono<T> create(T dto);
 
+  Mono<T> update(Long id, T dto);
+
 }

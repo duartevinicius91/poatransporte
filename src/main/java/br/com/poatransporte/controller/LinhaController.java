@@ -36,4 +36,8 @@ public class LinhaController implements BaseController<LinhaDto> {
     return linhaService.create(dto);
   }
 
+  @PutMapping("/{id}")
+  public Mono<LinhaDto> update(@PathVariable("id") Long id, @RequestBody LinhaDto dto) {
+    return linhaService.update(id, dto);
+  }
 }
