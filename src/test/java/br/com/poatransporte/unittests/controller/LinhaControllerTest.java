@@ -13,10 +13,8 @@ import reactor.core.publisher.Mono;
 import static br.com.poatransporte.helper.LinhaHelper.*;
 import static br.com.poatransporte.helper.LinhaHelper.buildDto;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 class LinhaControllerTest {
 
@@ -32,13 +30,26 @@ class LinhaControllerTest {
   @Test
   void shoudReturnExaclyWhatServiceReturns() {
     when(linhaService.findAll()).thenReturn(Flux.just(buildDto()));
-    Flux<LinhaDto> findAll = linhaController.findAll();
+    Flux<LinhaDto> findAll = linhaController.findAll(null);
     LinhaDto actual = findAll.blockFirst();
 
     assertNotNull(actual);
     assertEquals(NOME, actual.getNome());
     assertEquals(CODIGO, actual.getCodigo());
     assertEquals(ID, actual.getId());
+  }
+
+  @Test
+  void shoudReturnExaclyWhatServiceReturnsFilteringByName() {
+    when(linhaService.findByNome(anyString())).thenReturn(Flux.just(buildDto()));
+    Flux<LinhaDto> findAll = linhaController.findAll("null");
+    LinhaDto actual = findAll.blockFirst();
+
+    assertNotNull(actual);
+    assertEquals(NOME, actual.getNome());
+    assertEquals(CODIGO, actual.getCodigo());
+    assertEquals(ID, actual.getId());
+    verify(linhaService, times(1)).findByNome(anyString());
   }
 
   @Test

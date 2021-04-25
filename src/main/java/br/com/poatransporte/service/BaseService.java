@@ -3,9 +3,11 @@ package br.com.poatransporte.service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface BaseService <T> {
+public interface BaseService<T> {
 
   Flux<T> findAll();
+
+  Flux<T> findByNome(String nome);
 
   Mono<T> findById(Long id);
 
