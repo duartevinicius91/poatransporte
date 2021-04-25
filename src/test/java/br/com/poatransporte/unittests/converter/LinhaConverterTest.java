@@ -14,7 +14,7 @@ class LinhaConverterTest {
 
   @Test
   void convertToEntity() {
-    Linha linha = linhaConverter.toEntity(buildDto()).block();
+    Linha linha = linhaConverter.toEntity(buildDto());
 
     assertNotNull(linha);
     assertEquals(buildEntity(), linha);
@@ -22,7 +22,7 @@ class LinhaConverterTest {
 
   @Test
   void convertToDto() {
-    LinhaDto linha = linhaConverter.toDto(buildEntity()).block();
+    LinhaDto linha = linhaConverter.toDto(buildEntity());
 
     assertNotNull(linha);
     assertEquals(buildDto(), linha);

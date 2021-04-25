@@ -9,66 +9,70 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.MonoProcessor;
+
+import static org.apache.commons.lang3.StringUtils.upperCase;
 
 @Service
 public class LinhaService implements BaseService<LinhaDto> {
 
   public static final String LINHA_NAO_LOCALIZADA = "Linha com id %s não localizada";
-  private final LinhaRepository linhaRepository;
-  private final LinhaConverter linhaConverter;
+  private final LinhaRepository repository;
+  private final LinhaConverter converter;
 
-  public LinhaService(LinhaRepository linhaRepository, LinhaConverter linhaConverter) {
-    this.linhaRepository = linhaRepository;
-    this.linhaConverter = linhaConverter;
+  public LinhaService(LinhaRepository repository, LinhaConverter converter) {
+    this.repository = repository;
+    this.converter = converter;
   }
 
-
+  @Override
   public Flux<LinhaDto> findAll() {
-    return linhaRepository.findAll().flatMap(linhaConverter::toDto);
+    return repository.findAll().map(converter::toDto);
+  }
+
+  @Override
+  public Flux<LinhaDto> findByNome(String nome) {
+    return repository.findByNomeContaining(upperCase(nome)).map(converter::toDto);
   }
 
   @Override
   public Mono<LinhaDto> findById(Long id) {
-    return linhaRepository.findById(id).flatMap(linhaConverter::toDto);
+    return repository.findById(id).map(converter::toDto);
   }
 
   @Override
   public Mono<Void> delete(Long id) {
-    return linhaRepository.deleteById(id);
+    return repository.deleteById(id);
   }
 
   @Override
   public Mono<LinhaDto> create(LinhaDto dto) {
-    return linhaRepository.findById(dto.getId())
-        .switchIfEmpty(Mono.defer(() ->
-          linhaConverter.toEntity(dto).flatMap(linha -> {
-            linha.setAsNew();
-            return Mono.just(linha);
-          })
-        ))
-        .flatMap(linha -> {
-          linha.setId(dto.getId());
+    return repository.findByCodigo(dto.getCodigo())
+        .doOnNext(linha -> {
           linha.setNome(dto.getNome());
           linha.setCodigo(dto.getCodigo());
-          return Mono.just(linha);
         })
-        .flatMap(linhaRepository::save)
-        .flatMap(linhaConverter::toDto);
+        .switchIfEmpty(Mono.defer(() ->  {
+          Linha entity = converter.toEntity(dto);
+          entity.setAsNew();
+          return Mono.just(entity);
+        }))
+        .flatMap(repository::save)
+        .map(converter::toDto)
+        ;
   }
 
   @Override
   public Mono<LinhaDto> update(Long id, LinhaDto dto) {
-    return linhaRepository.findById(id)
+    return repository.findById(id)
         .switchIfEmpty(Mono.defer(() -> Mono.error(
             new HttpClientErrorException(HttpStatus.NOT_FOUND, String.format(LINHA_NAO_LOCALIZADA, id))
         )))
-        .flatMap(linha -> {
+        .doOnNext(linha -> {
           linha.setNome(dto.getNome());
           linha.setCodigo(dto.getCodigo());
-          return Mono.just(linha);
         })
-        .flatMap(linhaRepository::save)
-        .flatMap(linhaConverter::toDto);
+        .flatMap(linha -> repository.save(linha))
+        .map(linha -> converter.toDto(linha));
   }
+
 }

@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 import static br.com.poatransporte.helper.LinhaHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class LinhaServiceTest {
@@ -64,34 +65,35 @@ class LinhaServiceTest {
 
   @Test
   void whenReceiveLinhaShouldPersist() {
-    when(linhaRepository.findById(anyLong())).thenReturn(Mono.just(buildEntity()));
-    when(linhaRepository.save(any(Linha.class))).thenReturn(Mono.just(buildEntity(NEW_ID, NEW_CODIGO, NEW_NOME)));
+    when(linhaRepository.findByCodigo(anyString())).thenReturn(Mono.just(buildEntity()));
+    when(linhaRepository.save(any(Linha.class))).thenReturn(Mono.just(buildEntity(NEW_CODIGO, NEW_NOME)));
     ArgumentCaptor<Linha> argumentCaptor = ArgumentCaptor.forClass(Linha.class);
 
-    LinhaDto actual = linhaService.create(buildDto(NEW_ID, NEW_CODIGO, NEW_NOME)).block();
+    LinhaDto actual = linhaService.create(buildDto(NEW_CODIGO, NEW_NOME)).block();
 
-    verify(linhaRepository, times(1)).findById(anyLong());
+    verify(linhaRepository, times(1)).findByCodigo(anyString());
     verify(linhaRepository, times(1)).save(argumentCaptor.capture());
+    verifyNoMoreInteractions(linhaRepository);
     Linha value = argumentCaptor.getValue();
 
-    assertEquals(buildEntity(NEW_ID, NEW_CODIGO, NEW_NOME), value);
     assertFalse(value.isNew());
-    assertEquals(buildDto(NEW_ID, NEW_CODIGO, NEW_NOME), actual);
+    assertEquals(buildEntity(NEW_CODIGO, NEW_NOME), value);
+    assertEquals(buildDto(NEW_CODIGO, NEW_NOME), actual);
 
   }
 
   @Test
   void whenReceiveNewLinhaShouldPersist() {
-    when(linhaRepository.findById(anyLong())).thenReturn(Mono.empty());
+    when(linhaRepository.findByCodigo(anyString())).thenReturn(Mono.empty());
     when(linhaRepository.save(any(Linha.class))).thenReturn(Mono.just(buildEntity(NEW_ID, NEW_CODIGO, NEW_NOME)));
     ArgumentCaptor<Linha> argumentCaptor = ArgumentCaptor.forClass(Linha.class);
 
     LinhaDto actual = linhaService.create(buildDto(NEW_ID, NEW_CODIGO, NEW_NOME)).block();
 
-    verify(linhaRepository, times(1)).findById(anyLong());
+    verify(linhaRepository, times(1)).findByCodigo(anyString());
     verify(linhaRepository, times(1)).save(argumentCaptor.capture());
+    verifyNoMoreInteractions(linhaRepository);
     Linha value = argumentCaptor.getValue();
-
 
     assertTrue(value.isNew());
     assertEquals(NEW_ID, value.getId());

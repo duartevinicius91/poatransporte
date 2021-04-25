@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 @RestController
 @RequestMapping("/linha")
 public class LinhaController implements BaseController<LinhaDto> {
@@ -17,8 +19,11 @@ public class LinhaController implements BaseController<LinhaDto> {
   }
 
   @GetMapping
-  public Flux<LinhaDto> findAll() {
-    return linhaService.findAll();
+  public Flux<LinhaDto> findAll(@RequestParam("nome") String nome) {
+    if (isBlank(nome)) {
+      return linhaService.findAll();
+    }
+    return linhaService.findByNome(nome);
   }
 
   @GetMapping("/{id}")

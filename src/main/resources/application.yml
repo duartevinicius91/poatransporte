@@ -8,10 +8,14 @@ spring:
     user:  'root'
     password: 'root'
     baseline-on-migrate: true
+  webflux:
+    base-path: /api
 
 poa-transporte:
   linha-endpoint:
     url: http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=%&t=o
+  itinerario-endpoint:
+    url: http://www.poatransporte.com.br/php/facades/process.php?a=il&p=%s
 
 logging:
   level:
