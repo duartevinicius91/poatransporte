@@ -221,7 +221,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/api/itinerario/11915",
+							"raw": "http://localhost:8080/api/itinerario/8",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -230,7 +230,7 @@
 							"path": [
 								"api",
 								"itinerario",
-								"11915"
+								"8"
 							]
 						}
 					},
@@ -271,7 +271,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/itinerario/11914",
+							"raw": "http://localhost:8080/api/itinerario/11915",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -280,7 +280,7 @@
 							"path": [
 								"api",
 								"itinerario",
-								"11914"
+								"11915"
 							]
 						}
 					},
@@ -301,7 +301,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/itinerario/1",
+							"raw": "http://localhost:8080/api/itinerario/11915",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -310,7 +310,7 @@
 							"path": [
 								"api",
 								"itinerario",
-								"1"
+								"11915"
 							]
 						}
 					},
