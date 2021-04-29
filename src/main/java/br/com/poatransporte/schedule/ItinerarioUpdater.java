@@ -24,7 +24,7 @@ public class ItinerarioUpdater {
     this.linhaRepository = linhaRepository;
   }
 
-  @PostConstruct
+//  @PostConstruct
 //  @Scheduled(cron = "30 * * * * *")
   public void importaItinerariosPoaTransporte() {
     linhaRepository
