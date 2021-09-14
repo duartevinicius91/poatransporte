@@ -25,8 +25,8 @@ public class LinhaUpdater {
     this.linhaService = linhaService;
   }
 
-  @PostConstruct
-  @Scheduled(cron = "0 0 1 * * *")
+//  @PostConstruct
+//  @Scheduled(cron = "0 0 1 * * *")
   public void importaLinhasPoaTransporte() {
     linhaWebClient.getLinhas()
         .flatMap(linhaService::create)
